@@ -158,19 +158,19 @@ void RenderFunction(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	//TODO matricile pentru transformari
-	resizeMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.f / width, 1.f / height, 1.0)); // scalam, "aducem" scena la "patratul standard" [-1,1]x[-1,1]
-	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(i, 0, 0.0)); // controleaza translatia de-a lungul lui Ox
-	matrTransl2 = glm::translate(glm::mat4(1.0f), glm::vec3(j, k, 0.0)); // controleaza translatia de-a lungul lui Ox
+	resizeMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1.f / width, 1.f / height, 1.0)); //"patratul standard" [-1,1]x[-1,1]
+	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(i, 0, 0.0)); // masina depasita
+	matrTransl2 = glm::translate(glm::mat4(1.0f), glm::vec3(j, k, 0.0)); // masina care depaseste
+	matrScale1 = glm::scale(glm::mat4(1.0f), glm::vec3(1.1, 0.9, 0.0));
 
-	matrDepl = glm::translate(glm::mat4(1.0f), glm::vec3(20.0, 80.0, 0.0)); // plaseaza patratul rosu
-	matrScale1 = glm::scale(glm::mat4(1.0f), glm::vec3(1.1, 0.9, 0.0)); // folosita la desenarea dreptunghiului albastru
-
+	//axele
 	myMatrix = resizeMatrix;
 	myMatrixLocation = glGetUniformLocation(ProgramId, "myMatrix");
 	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
 	glDrawArrays(GL_LINES, 0, 4);
 
-	myMatrix = resizeMatrix * matrTransl * matrScale1;// *matrDepl* matrScale1;
+	//masina depasita
+	myMatrix = resizeMatrix * matrTransl * matrScale1;
 	myMatrixLocation = glGetUniformLocation(ProgramId, "myMatrix");
 	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
 	codCol = 1;
@@ -178,6 +178,7 @@ void RenderFunction(void) {
 	glUniform1i(codColLocation, codCol);
 	glDrawArrays(GL_POLYGON, 4, 4);
 
+	//masina care depaseste
 	myMatrix = resizeMatrix * matrTransl2 * matrScale1;
 	myMatrixLocation = glGetUniformLocation(ProgramId, "myMatrix");
 	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
