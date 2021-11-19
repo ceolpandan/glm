@@ -18,6 +18,8 @@ void main(void)
 		FragColor=vec4 (1.0, 0.0, 0.0, 1.0);
 	if ( codCol==3 )
 		FragColor=vec4 (0.0, 1.0, 0.0, 1.0);
+	if ( codCol==4 )
+		FragColor=vec4 (0.4, 0.2, 0.6, 1.0);
 
   }
  
