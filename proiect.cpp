@@ -26,7 +26,7 @@ matrTranslLocation,
 matrRotlLocation,
 codColLocation;
 
-glm::mat4 myMatrix, resizeMatrix, matrTranslCS, matrTransl, matrTransl2, matrScale1, matrScale2, matrRot1, matrRot3, matrDepl, matrRot2, matBandaTransl2, matBandaTransl, matMarcajTransl;
+glm::mat4 myMatrix, resizeMatrix, matrTranslCS, matrTranslCS2, matrTransl, matrTransl2, matrScale1, matrScale2, matrRot1, matrRot4, matrRot5, matrRot6, matrRot3, matrDepl, matrRot2, matBandaTransl2, matBandaTransl, matMarcajTransl;
 
 float  lenCar1 = 2.5, lenCar2 = 2.5, yMaxDepasire = 200;
 int cycle = 0;
@@ -35,13 +35,51 @@ float PI = 3.141592, angle = 0;
 float tx = 0; float ty = 0;
 float width = 2250.0f, height = 1500.0f;
 float xMasina2 = 2250.0, xMasina1 = 3000.0, yMasina1 = 0.0, alpha = 0.0, vitezaMasina1 = 10, vitezaMasina2 = 6, latimeBanda = 200, marcaj = 1;
-float xMasinaCS = -2250, vitezaMasinaCS = 6;
+float xMasinaCS = -2250, vitezaMasinaCS = 10, yMasinaCS = 0;
 
 
 void incrementPositionsIJK(void)
 {
 	xMasina2 += vitezaMasina2 * alpha;
 	xMasina1 += vitezaMasina1 * alpha;
+	if (xMasinaCS > xMasina2 - 100)
+		yMasinaCS += vitezaMasinaCS * alpha;
+
+	if (xMasinaCS > -600)
+		vitezaMasinaCS = 0;
+	else if (xMasinaCS > -650 && xMasinaCS <= -600)
+		vitezaMasinaCS = 2;
+	else if (xMasinaCS > -680 && xMasinaCS <= -650)
+		vitezaMasinaCS = 3;
+	else if (xMasinaCS > -680 && xMasinaCS <= -670)
+		vitezaMasinaCS = 4;
+	else if (xMasinaCS > -690 && xMasinaCS <= -680)
+		vitezaMasinaCS = 5;
+	else if (xMasinaCS > -700 && xMasinaCS <= -690)
+		vitezaMasinaCS = 6;
+	else if (xMasinaCS > -800 && xMasinaCS <= -700)
+		vitezaMasinaCS = 7;
+	else if (xMasinaCS > -900 && xMasinaCS <= -800)
+		vitezaMasinaCS = 8;
+	else if (xMasinaCS >= -1000)
+		vitezaMasinaCS = 9;
+
+	if (xMasina2 < -600) {
+		vitezaMasinaCS += 1;
+	}
+	if (xMasina2 < -620) {
+		vitezaMasinaCS += 1;
+	}
+	if (xMasina2 < -650) {
+		vitezaMasinaCS += 1;
+	}
+	if (xMasina2 < -680) {
+		vitezaMasinaCS += 1;
+	}
+	if (xMasina2 < -700) {
+		vitezaMasinaCS += 6;
+	}
+
 	xMasinaCS += vitezaMasinaCS * -1 * alpha;
 
 	if (abs(xMasina1 - xMasina2) < 350 && xMasina1 > xMasina2) {
@@ -55,6 +93,7 @@ void incrementPositionsIJK(void)
 			yMasina1 = 0;
 		else yMasina1 -= 5 * alpha;
 	}
+
 
 	glutPostRedisplay();
 }
@@ -162,6 +201,8 @@ void RenderFunction(void) {
 	matrTransl = glm::translate(glm::mat4(1.0f), glm::vec3(xMasina2, 0.0, 0.0)); // masina depasita
 	matrTransl2 = glm::translate(glm::mat4(1.0f), glm::vec3(xMasina1, yMasina1, 0.0)); // masina care depaseste
 	matrTranslCS = glm::translate(glm::mat4(1.0f), glm::vec3(xMasinaCS, 0.0, 0.0));
+	matrTranslCS2 = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, yMasinaCS, 0.0));
+
 
 	matBandaTransl = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -latimeBanda, 0.0));
 	matBandaTransl2 = glm::translate(glm::mat4(1.0f), glm::vec3(-400, 0, 0.0));
@@ -173,6 +214,10 @@ void RenderFunction(void) {
 	matrRot1 = glm::rotate(glm::mat4(1.0f), PI / 8, glm::vec3(0.0, 0.0, 1.0));
 	matrRot2 = glm::rotate(glm::mat4(1.0f), PI / 8, glm::vec3(0.0, 0.0, -1.0));
 	matrRot3 = glm::rotate(glm::mat4(1.0f), PI / 2, glm::vec3(0.0, 0.0, -1.0));
+
+	matrRot4 = glm::rotate(glm::mat4(1.0f), PI / 10, glm::vec3(0.0, 0.0, 1.0));
+	matrRot5 = glm::rotate(glm::mat4(1.0f), PI / 6, glm::vec3(0.0, 0.0, -1.0));
+	matrRot6 = glm::rotate(glm::mat4(1.0f), PI / 2, glm::vec3(0.0, 0.0, -1.0));
 
 	codColLocation = glGetUniformLocation(ProgramId, "codCol");
 	myMatrixLocation = glGetUniformLocation(ProgramId, "myMatrix");
@@ -216,8 +261,8 @@ void RenderFunction(void) {
 	glUniform1i(codColLocation, codCol);
 	glDrawArrays(GL_POLYGON, 2, 4);
 
-	//masina contra-sens
 	myMatrix = resizeMatrix * matBandaTransl * matrTranslCS * matrScale1;
+
 	glUniformMatrix4fv(myMatrixLocation, 1, GL_FALSE, &myMatrix[0][0]);
 	codCol = 4;
 	glUniform1i(codColLocation, codCol);
